@@ -1,6 +1,5 @@
 const inquirer = require("inquirer");
 const mysql2 = require("mysql2");
-const { resourceLimits } = require("worker_threads");
 const db = require(".");
 
 const connection = mysql2.createConnection({
@@ -11,7 +10,7 @@ const connection = mysql2.createConnection({
     database:"employee_db"
 });
 
-connection.connect(function(err) {
+connection.connect((err) => {
     if (err) throw err;
     homePage();
 });
@@ -62,3 +61,48 @@ const homePage = () => {
         }
     });
 }
+
+const addDepartment = () => {
+    
+    inquirer.prompt({
+        type: "input",
+        message: "What is the name of your department?",
+        name: "deptName"
+    }).then((answer) => {
+
+        connection.query("INSERT INTO department (name) VALUES (?)"), [answer.deptName], ((err, res) => {
+
+            if (err) throw err;
+            console.table(res)
+            homePage()
+        })
+    })
+}
+
+const addRole = () => {
+    inquirer.prompt([
+        {
+            type: "input",
+            message: "Whats the role?",
+            name: "roleName"
+        },
+        {
+            type: "input",
+            message: "What is the salary?",
+            name: "salarySum"
+        },
+        {
+            type: "input",
+            message: "What is the ID #?",
+            name: "departmentId"
+        }
+    ]).then((answer) => {
+        
+        connection.query("INSERT INTO role (title, salary, department_id) VALUES (?,?,?)", [answer.roleName, answer.salarySum, answer.departmentId], ((err, res) => {
+            if (err) throw err;
+            console.table(res);
+            homePage();
+        }))
+    })
+}
+
