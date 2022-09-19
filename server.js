@@ -1,7 +1,7 @@
 const inquirer = require("inquirer");
 const mysql2 = require("mysql2");
 const { resourceLimits } = require("worker_threads");
-const db = require("./db");
+const db = require(".");
 
 const connection = mysql2.createConnection({
     host: "localhost",
