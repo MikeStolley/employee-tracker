@@ -106,3 +106,59 @@ const addRole = () => {
     })
 }
 
+const addEmployee = () => {
+    inquirer.prompt([
+        {
+            type: "input",
+            message: "What is the employees first name?",
+            name: "firstName"
+        },
+        {
+            type: "input",
+            message: "What is the employees last name?",
+            name: "lastName"
+        },
+        {
+            type: "input",
+            message: "What is the role id?",
+            name: "roleId"
+        },
+        {
+            type: "input",
+            message: "What is the managers id?",
+            name: "managerId"
+        }
+    ]).then((answer) => {
+        
+        connection.query("INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?,?,?)", [answer.firstName, answer.lastName, answer.roleId, answer.managerId], ((err, res) => {
+            if (err) throw err;
+            console.table(res);
+            homePage();
+        }))
+    })
+}
+
+const updateEmployee = () => {
+    inquirer.prompt([
+        {
+            type: "input",
+            message: "What employee is being updated?",
+            name: "employeeUpdate"
+        },
+        {
+            type: "input",
+            message: "Where is the employee being updated to?",
+            name: "roleUpdate"
+        }
+      
+    ]).then((answer) => {
+        
+        connection.query("UPDATE employee SET role_id=? WHERE first_name=?", [answer.employeeUpdate, answer.roleUpdate], ((err, res) => {
+            if (err) throw err;
+            console.table(res);
+            homePage();
+        }))
+    })
+}
+
+
