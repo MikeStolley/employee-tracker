@@ -1,21 +1,24 @@
 const inquirer = require("inquirer");
-const mysql2 = require("mysql2");
+const mysql = require("mysql2");
 const db = require(".");
 
-const connection = mysql2.createConnection({
+const connection = mysql.createConnection(
+    {
     host: "localhost",
-    port: 3306,
     user:"root",
     password:"Milkmaid13579",
     database:"employee_db"
-});
+    },
+    
+    console.log("Connected to employee database")
+);
 
 connection.connect((err) => {
     if (err) throw err;
     homePage();
 });
 
-const homePage = () => {
+homePage = () => {
     inquirer.prompt({
         type: "list",
         choices: [
@@ -32,8 +35,6 @@ const homePage = () => {
         name: "option"
     })
     .then((result) => {
-        console.log("You entered: " + result+option);
-
         switch (result.option) {
             case "Add department":
                 addDepartment();
@@ -62,7 +63,7 @@ const homePage = () => {
     });
 }
 
-const addDepartment = () => {
+addDepartment = () => {
     
     inquirer.prompt({
         type: "input",
@@ -70,7 +71,7 @@ const addDepartment = () => {
         name: "deptName"
     }).then((answer) => {
 
-        connection.query("INSERT INTO department (name) VALUES (?)"), [answer.deptName], ((err, res) => {
+        connection.query("INSERT INTO department (name) VALUES (?,?,?)"), [answer.deptName], ((err, res) => {
 
             if (err) throw err;
             console.table(res)
@@ -79,7 +80,7 @@ const addDepartment = () => {
     })
 }
 
-const addRole = () => {
+addRole = () => {
     inquirer.prompt([
         {
             type: "input",
@@ -106,7 +107,7 @@ const addRole = () => {
     })
 }
 
-const addEmployee = () => {
+addEmployee = () => {
     inquirer.prompt([
         {
             type: "input",
@@ -138,7 +139,7 @@ const addEmployee = () => {
     })
 }
 
-const updateEmployee = () => {
+updateEmployee = () => {
     inquirer.prompt([
         {
             type: "input",
@@ -161,4 +162,34 @@ const updateEmployee = () => {
     })
 }
 
+viewDepartment = () => {
+    let query = "SELECT * FROM department";
+    connection.query(query, ((err, res) => {
+        if (err) throw err;
+        console.table(res);
+        homePage();
+    }))
+}
 
+viewRoles = () => {
+    let query = "SELECT * FROM role";
+    connection.query(query, ((err, res) => {
+        if (err) throw err;
+        console.table(res);
+        homePage();
+    }))
+}
+
+viewEmployees = () => {
+    let query = "SELECT * FROM employee";
+    connection.query(query, ((err, res) => {
+        if (err) throw err;
+        console.table(res);
+        homePage();
+    }))
+}
+
+quit = () => {
+    connection.end();
+    process.exit
+}
