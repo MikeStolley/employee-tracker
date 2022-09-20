@@ -1,6 +1,7 @@
 const inquirer = require("inquirer");
 const mysql = require("mysql2");
 const db = require(".");
+const table = require("console.table");
 
 const connection = mysql.createConnection(
     {
@@ -71,12 +72,12 @@ addDepartment = () => {
         name: "deptName"
     }).then((answer) => {
 
-        connection.query("INSERT INTO department (name) VALUES (?,?,?)"), [answer.deptName], ((err, res) => {
+        connection.query("INSERT INTO department (name) VALUES (?)", [answer.deptName], ((err, res) => {
 
             if (err) throw err;
             console.table(res)
             homePage()
-        })
+        }))
     })
 }
 
